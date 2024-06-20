@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState, useRef } from 'react'
 
 function App() {
   const [length, setlength] = useState(8)
@@ -18,10 +18,23 @@ function App() {
     }
     for (let i = 0; i <= length; i++) {
       let char = Math.floor(Math.random() * str.length + 1)
-      pass = str.charAt(char)
+      pass += str.charAt(char)
     }
 
     setPwd(pass)
+  }, [length, noAllowed, charAllowed, setPwd])
+
+  //useRef hook
+  const pwdRef =useRef(null);
+
+  const copyPwdToClip = useCallback(() => {
+    pwdRef.current?.select();
+    pwdRef.current?.setSelectionRange(0, 2);
+    window.navigator.clipboard.writeText(pwd)
+  }, [pwd])
+
+  useEffect(() => {
+    pwdGenerator()
   }, [length, noAllowed, charAllowed, setPwd])
 
   return (
@@ -37,6 +50,7 @@ function App() {
         readOnly
         />
         <button
+        onClick={copyPwdToClip}
         className='outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0'>
           copy
         </button>
